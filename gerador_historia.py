@@ -1,32 +1,27 @@
 import streamlit as st
 from google import genai
 
-st.set_page_config(page_title="Gerador de Histórias e Demandas", layout="wide")
-st.title("Gerador de Histórias JIRA + Demandas Pipefy (Gemini 2.5 Flash)")
+st.set_page_config(page_title="Gerador de Histórias JIRA", layout="wide")
+st.title("Gerador de Histórias JIRA")
 
 st.markdown("""
 Preencha um objetivo ou problema de negócio. O app irá gerar automaticamente:
 - Uma User Story completa no padrão JIRA
-- Uma demanda Pipefy preenchida, pronta para uso
 
 Utilize exemplos reais (ex: “Quero automatizar o KPI de Retido Digital para o dashboard LevelUp Analytics”)!
 """)
 
 entrada_usuario = st.text_area("Descreva o objetivo ou problema a ser resolvido:")
 
-if st.button("Gerar história e demanda"):
+if st.button("Gerar história JIRA"):
     if entrada_usuario.strip() == "":
-        st.warning("Digite um texto para gerar a história e a demanda.")
+        st.warning("Digite um texto para gerar a história JIRA.")
     else:
-        API_KEY = st.secrets["GOOGLE_API_KEY"]   # <-- PEGANDO DO SECRETS!
+        API_KEY = st.secrets["GOOGLE_API_KEY"]   
         client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
-Você é um especialista em análise de negócios e demandas analíticas em telecom.
-
-Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
-1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
-2. **Demanda no padrão Pipefy**, preenchida como no exemplo (Squad, Email, Tipo de Solicitação, Tipo de Demanda, Prioridade, Descrição da Solicitação, Motivo da Solicitação, Expectativa de Entrega).
+Com base no texto do usuário abaixo, crie **uma História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
 
 **Texto do usuário:**  
 {entrada_usuario}
@@ -72,25 +67,11 @@ Principais mudanças e melhorias: [detalhar]
 
 ---
 
-Exemplo de Demanda Pipefy:
-Solicitação de: Lyriam Milesi  
-Squad: MCM | APP  
-Email: lyriam.milesi@claro.com.br  
-Tipo de Solicitação: Analytics - Análises de dados  
-Tipo de Demanda: Pesquisa de dados  
-Prioridade: Importante  
-Descrição da Solicitação: Precisamos saber o volume de UU por segmento no App MCM.  
-Motivo da Solicitação: Marketing precisa dessa volumetria para propor campanhas de incentivo para o Auto Atendimento  
-Expectativa de Entrega: 31/10/2023
-
----
-
-Gere as duas respostas AUTOMATICAMENTE, com todos os campos preenchidos, adaptando ao contexto do usuário.
-
+Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo todos os campos.
 Responda em markdown para facilitar a visualização.
 """
         response = client.models.generate_content(
-            model="gemini-2.5-flash",  # ou "gemini-2.5-pro"
+            model="gemini-2.5-flash",
             contents=prompt
         )
         st.markdown("---")
