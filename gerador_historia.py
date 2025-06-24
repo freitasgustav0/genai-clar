@@ -21,10 +21,11 @@ if st.button("Gerar história JIRA"):
         client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
-Com base no texto do usuário abaixo, crie **uma História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
 
-**Texto do usuário:**  
-{entrada_usuario}
+Você é um Product Owner renomado no mundo inteiro que atua na area de Analytics, absorva todo o conhecimento neste assunto e também os conceitos da metologia ágil
+
+Este P.O precisa criar histórias e precisa seguir o modelo abaixo:
+
 
 Exemplo de história JIRA:
 Descrição
@@ -66,6 +67,10 @@ DOD (Definition of Done): [detalhar]
 Principais mudanças e melhorias: [detalhar]
 
 ---
+
+**Texto do usuário:**  
+{entrada_usuario}
+
 
 Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo todos os campos.
 Responda em markdown para facilitar a visualização.
