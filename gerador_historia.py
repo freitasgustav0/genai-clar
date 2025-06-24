@@ -1,8 +1,8 @@
 import streamlit as st
-import requests
+import google.generativeai as genai
 
 st.set_page_config(page_title="Gerador de Histórias e Demandas", layout="wide")
-st.title("Gerador de Histórias JIRA + Demandas Pipefy (IA Local)")
+st.title("Gerador de Histórias JIRA + Demandas Pipefy (Gemini)")
 
 st.markdown("""
 Preencha um objetivo ou problema de negócio. O app irá gerar automaticamente:
@@ -18,6 +18,7 @@ if st.button("Gerar história e demanda"):
     if entrada_usuario.strip() == "":
         st.warning("Digite um texto para gerar a história e a demanda.")
     else:
+        genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
         prompt = f"""
 Você é um especialista em análise de negócios e demandas analíticas em telecom.
 
@@ -86,18 +87,11 @@ Gere as duas respostas AUTOMATICAMENTE, com todos os campos preenchidos, adaptan
 
 Responda em markdown para facilitar a visualização.
 """
-
-        resposta = requests.post(
-            "http://localhost:11434/api/generate",
-            json={
-                "model": "llama3",
-                "prompt": prompt,
-                "stream": False
-            }
-        ).json()
-
+        model = genai.GenerativeModel('gemini-pro')
+        resposta = model.generate_content(prompt)
+        
         st.markdown("---")
         st.markdown("### Resposta da IA")
-        st.markdown(resposta["response"])
+        st.markdown(resposta.text)
 
-st.info("Ollama precisa estar rodando localmente com o modelo Llama 3 (`ollama serve`). Você pode adaptar para outros modelos ou APIs se desejar.")
+st.info("Este app usa a API do Google Gemini. O prompt, estrutura e resultados são os mesmos do app local com Ollama — agora funcionando 100% online na Streamlit Cloud!")
