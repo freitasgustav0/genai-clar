@@ -1,7 +1,7 @@
 import streamlit as st
 from google import genai
 
-st.set_page_config(page_title="Gerador de Histórias JIRA", layout="wide")
+st.set_page_config(page_title="Gerador de Histórias JIRA ------", layout="wide")
 st.title("Gerador de Histórias JIRA")
 
 st.markdown("""
