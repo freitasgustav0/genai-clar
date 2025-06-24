@@ -66,7 +66,7 @@ DOD (Definition of Done): [detalhar]
 
 Principais mudanças e melhorias: [detalhar]
 
----
+
 
 **Texto do usuário:**  
 {entrada_usuario}
@@ -74,6 +74,8 @@ Principais mudanças e melhorias: [detalhar]
 
 Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo todos os campos.
 Responda em markdown para facilitar a visualização.
+
+---
 """
         response = client.models.generate_content(
             model="gemini-2.5-flash",
