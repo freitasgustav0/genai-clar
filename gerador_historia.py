@@ -18,9 +18,11 @@ if st.button("Gerar história e demanda"):
     if entrada_usuario.strip() == "":
         st.warning("Digite um texto para gerar a história e a demanda.")
     else:
+        # Configure a API Key do Gemini de forma segura
         genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+
         prompt = f"""
-Você é um especialista em análise de negócios e demandas analíticas em telecom.
+
 
 Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
 1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
@@ -73,11 +75,11 @@ Principais mudanças e melhorias: [detalhar]
 Exemplo de Demanda Pipefy:
 Solicitação de: Lyriam Milesi  
 Squad: MCM | APP  
-Email: lyriam.milesi@claro.com.br  
+Email: usuario@teste.com.br  
 Tipo de Solicitação: Analytics - Análises de dados  
 Tipo de Demanda: Pesquisa de dados  
 Prioridade: Importante  
-Descrição da Solicitação: Precisamos saber o volume de UU por segmento no App MCM.  
+Descrição da Solicitação: Precisamos saber o volume de Usuários únicos por segmento no App e Site.  
 Motivo da Solicitação: Marketing precisa dessa volumetria para propor campanhas de incentivo para o Auto Atendimento  
 Expectativa de Entrega: 31/10/2023
 
@@ -94,4 +96,4 @@ Responda em markdown para facilitar a visualização.
         st.markdown("### Resposta da IA")
         st.markdown(resposta.text)
 
-st.info("Este app usa a API do Google Gemini. O prompt, estrutura e resultados são os mesmos do app local com Ollama — agora funcionando 100% online na Streamlit Cloud!")
+st.info("Este app usa a API do Google Gemini para gerar histórias de usuário e demandas Pipefy automaticamente.")
