@@ -1,7 +1,9 @@
 import streamlit as st
 import google.generativeai as genai
+import openai
+import time
 
-# Configuração do app
+# Configuração da página
 st.set_page_config(page_title="Gerador de Histórias JIRA", layout="wide")
 st.title("Gerador de Histórias JIRA")
 
@@ -15,19 +17,11 @@ Exemplo: “Quero automatizar o KPI de Retido Digital para o dashboard LevelUp A
 entrada_usuario = st.text_area("Descreva o objetivo ou problema a ser resolvido:")
 
 if st.button("Gerar história JIRA"):
-    if entrada_usuario.strip() == "":
+    if not entrada_usuario.strip():
         st.warning("Digite um texto para gerar a história JIRA.")
     else:
-        try:
-            # Configure a chave da API
-            API_KEY = st.secrets["GOOGLE_API_KEY"]
-            genai.configure(api_key=API_KEY)
-
-            # Instancie o modelo correto
-            model = genai.GenerativeModel("gemini-1.5-pro")
-
-            # Prompt original estruturado
-            prompt = f"""
+        # PROMPT COMPLETO COM A ESTRUTURA ORIGINAL
+        prompt = f"""
 Você é um Product Owner renomado no mundo inteiro que atua na área de Analytics, absorva todo o conhecimento neste assunto e também os conceitos da metodologia ágil.
 
 Este P.O precisa criar histórias e precisa seguir o modelo abaixo:
@@ -69,14 +63,41 @@ Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo to
 Responda em markdown para facilitar a visualização.
 """
 
-            # Gerar conteúdo
-            response = model.generate_content(prompt)
+        try:
+            st.info("⏳ Gerando com Gemini (Google)...")
+            genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+            model = genai.GenerativeModel("gemini-1.5-pro")
 
-            # Mostrar resultado
-            st.markdown("---")
-            st.markdown("### História JIRA Gerada")
+            start = time.time()
+            response = model.generate_content(prompt)
+            elapsed = time.time() - start
+
+            if elapsed > 12:
+                raise TimeoutError("Tempo de resposta excedido. Ativando fallback.")
+
+            st.success("✅ História gerada com Gemini!")
+            st.markdown("### História JIRA (via Gemini)")
             st.markdown(response.text)
 
         except Exception as e:
-            st.error("❌ Erro ao gerar a história JIRA. Tente novamente mais tarde.")
-            st.text(f"Detalhes técnicos: {e}")
+            st.warning("⚠️ Falha com Gemini. Usando GPT-3.5 (OpenRouter) como alternativa...")
+
+            try:
+                openai.api_key = st.secrets["OPENROUTER_API_KEY"]
+                openai.api_base = "https://openrouter.ai/api/v1"
+
+                response = openai.ChatCompletion.create(
+                    model="openai/gpt-3.5-turbo",
+                    messages=[{"role": "user", "content": prompt}],
+                    temperature=0.7,
+                    max_tokens=1000
+                )
+
+                historia = response.choices[0].message["content"]
+                st.success("✅ História gerada com GPT-3.5!")
+                st.markdown("### História JIRA (via OpenRouter)")
+                st.markdown(historia)
+
+            except Exception as err:
+                st.error("❌ Falha também no modelo alternativo.")
+                st.text(f"Erro: {err}")
