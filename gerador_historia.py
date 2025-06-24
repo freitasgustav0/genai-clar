@@ -2,7 +2,7 @@ import streamlit as st
 from google import genai
 
 st.set_page_config(page_title="Gerador de Histórias e Demandas", layout="wide")
-st.title("Gerador de Histórias JIRA ")
+st.title("Gerador de Histórias JIRA + Demandas Pipefy (Gemini 2.5 Flash)")
 
 st.markdown("""
 Preencha um objetivo ou problema de negócio. O app irá gerar automaticamente:
@@ -18,14 +18,15 @@ if st.button("Gerar história e demanda"):
     if entrada_usuario.strip() == "":
         st.warning("Digite um texto para gerar a história e a demanda.")
     else:
-        API_KEY = st.secrets["GOOGLE_API_KEY"]   
+        API_KEY = st.secrets["GOOGLE_API_KEY"]   # <-- PEGANDO DO SECRETS!
         client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
+Você é um especialista em análise de negócios e demandas analíticas em telecom.
 
-Com base no texto do usuário abaixo, crie **AS respostas automáticas**:
+Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
 1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
-
+2. **Demanda no padrão Pipefy**, preenchida como no exemplo (Squad, Email, Tipo de Solicitação, Tipo de Demanda, Prioridade, Descrição da Solicitação, Motivo da Solicitação, Expectativa de Entrega).
 
 **Texto do usuário:**  
 {entrada_usuario}
@@ -69,7 +70,20 @@ DOD (Definition of Done): [detalhar]
 
 Principais mudanças e melhorias: [detalhar]
 
+---
 
+Exemplo de Demanda Pipefy:
+Solicitação de: Lyriam Milesi  
+Squad: MCM | APP  
+Email: lyriam.milesi@claro.com.br  
+Tipo de Solicitação: Analytics - Análises de dados  
+Tipo de Demanda: Pesquisa de dados  
+Prioridade: Importante  
+Descrição da Solicitação: Precisamos saber o volume de UU por segmento no App MCM.  
+Motivo da Solicitação: Marketing precisa dessa volumetria para propor campanhas de incentivo para o Auto Atendimento  
+Expectativa de Entrega: 31/10/2023
+
+---
 
 Gere as duas respostas AUTOMATICAMENTE, com todos os campos preenchidos, adaptando ao contexto do usuário.
 
