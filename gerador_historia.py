@@ -71,16 +71,7 @@ Principais mudanças e melhorias: [detalhar]
 
 ---
 
-Exemplo de Demanda Pipefy:
-Solicitação de: [Nome do solicitante]  
-Squad: MCM | APP  
-Email: teste@teste.com.br  
-Tipo de Solicitação: Analytics - Análises de dados  
-Tipo de Demanda: Pesquisa de dados  
-Prioridade: Importante  
-Descrição da Solicitação: Precisamos saber o volume de UU por segmento no App MCM.  
-Motivo da Solicitação: Marketing precisa dessa volumetria para propor campanhas de incentivo para o Auto Atendimento  
-Expectativa de Entrega: 31/10/2023
+
 
 ---
 
