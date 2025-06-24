@@ -22,7 +22,7 @@ if st.button("Gerar história e demanda"):
         client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
-
+Você é um especialista em análise de negócios e demandas analíticas em telecom.
 
 Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
 1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
@@ -73,7 +73,7 @@ Principais mudanças e melhorias: [detalhar]
 ---
 
 Exemplo de Demanda Pipefy:
-Solicitação de: [Nome do solicitante]
+Solicitação de: [Nome do solicitante]  
 Squad: MCM | APP  
 Email: teste@teste.com.br  
 Tipo de Solicitação: Analytics - Análises de dados  
