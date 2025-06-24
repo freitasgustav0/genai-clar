@@ -69,11 +69,7 @@ DOD (Definition of Done): [detalhar]
 
 Principais mudanças e melhorias: [detalhar]
 
----
 
-
-
----
 
 Gere as duas respostas AUTOMATICAMENTE, com todos os campos preenchidos, adaptando ao contexto do usuário.
 
