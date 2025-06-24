@@ -2,7 +2,7 @@ import streamlit as st
 from google import genai
 
 st.set_page_config(page_title="Gerador de Histórias e Demandas", layout="wide")
-st.title("Gerador de Histórias JIRA + Demandas Pipefy (Gemini 2.5 Flash)")
+st.title("Gerador de Histórias JIRA ")
 
 st.markdown("""
 Preencha um objetivo ou problema de negócio. O app irá gerar automaticamente:
@@ -22,7 +22,7 @@ if st.button("Gerar história e demanda"):
         client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
-Você é um especialista em análise de negócios e demandas analíticas em telecom.
+
 
 Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
 1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
