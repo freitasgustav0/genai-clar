@@ -1,7 +1,7 @@
 import streamlit as st
-from google import genai
+import google.generativeai as genai
 
-# Configuração da página
+# Configuração do app
 st.set_page_config(page_title="Gerador de Histórias JIRA", layout="wide")
 st.title("Gerador de Histórias JIRA")
 
@@ -9,7 +9,7 @@ st.markdown("""
 Preencha um objetivo ou problema de negócio. O app irá gerar automaticamente:
 - Uma User Story completa no padrão JIRA
 
-Utilize exemplos reais (ex: “Quero automatizar o KPI de Retido Digital para o dashboard LevelUp Analytics”)!
+Exemplo: “Quero automatizar o KPI de Retido Digital para o dashboard LevelUp Analytics”
 """)
 
 entrada_usuario = st.text_area("Descreva o objetivo ou problema a ser resolvido:")
@@ -19,16 +19,15 @@ if st.button("Gerar história JIRA"):
         st.warning("Digite um texto para gerar a história JIRA.")
     else:
         try:
-            # Configurar API com cliente manualmente
+            # Configure a chave da API
             API_KEY = st.secrets["GOOGLE_API_KEY"]
-            client = genai.Client(api_key=API_KEY)
+            genai.configure(api_key=API_KEY)
 
-            # Cria o modelo explicitamente
-            model = client.GenerativeModel(model_name="gemini-1.5-pro")
+            # Instancie o modelo correto
+            model = genai.GenerativeModel("gemini-1.5-pro")
 
-            # Prompt com a estrutura original
+            # Prompt original estruturado
             prompt = f"""
-
 Você é um Product Owner renomado no mundo inteiro que atua na área de Analytics, absorva todo o conhecimento neste assunto e também os conceitos da metodologia ágil.
 
 Este P.O precisa criar histórias e precisa seguir o modelo abaixo:
@@ -70,10 +69,10 @@ Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo to
 Responda em markdown para facilitar a visualização.
 """
 
-            # Geração
+            # Gerar conteúdo
             response = model.generate_content(prompt)
 
-            # Exibir resposta
+            # Mostrar resultado
             st.markdown("---")
             st.markdown("### História JIRA Gerada")
             st.markdown(response.text)
