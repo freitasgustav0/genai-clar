@@ -63,7 +63,7 @@ Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo to
 Responda em markdown para facilitar a visualização.
 """
 
-        # Primeiro tenta com Gemini
+        # Tenta com Gemini primeiro
         try:
             st.info("⏳ Gerando com Gemini (Google)...")
             genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -80,9 +80,9 @@ Responda em markdown para facilitar a visualização.
             st.markdown("### História JIRA (via Gemini)")
             st.markdown(response.text)
 
-        # Fallback para Mistral (via OpenRouter)
+        # Fallback para OpenChat 7B via OpenRouter
         except Exception as e:
-            st.warning("⚠️ Falha com Gemini. Usando Mistral 7B (via OpenRouter) como alternativa...")
+            st.warning("⚠️ Falha com Gemini. Usando OpenChat 7B (via OpenRouter)...")
 
             try:
                 client = openai.OpenAI(
@@ -91,15 +91,15 @@ Responda em markdown para facilitar a visualização.
                 )
 
                 response = client.chat.completions.create(
-                    model="mistralai/mistral-7b-instruct",
+                    model="openchat/openchat-7b",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7,
                     max_tokens=1000
                 )
 
                 historia = response.choices[0].message.content
-                st.success("✅ História gerada com Mistral 7B!")
-                st.markdown("### História JIRA (via OpenRouter - Mistral)")
+                st.success("✅ História gerada com OpenChat 7B!")
+                st.markdown("### História JIRA (via OpenRouter - OpenChat 7B)")
                 st.markdown(historia)
 
             except Exception as err:
