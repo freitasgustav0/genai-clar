@@ -1,8 +1,8 @@
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 
 st.set_page_config(page_title="Gerador de Histórias e Demandas", layout="wide")
-st.title("Gerador de Histórias JIRA + Demandas Pipefy (Gemini)")
+st.title("Gerador de Histórias JIRA + Demandas Pipefy (Gemini 2.5 Flash)")
 
 st.markdown("""
 Preencha um objetivo ou problema de negócio. O app irá gerar automaticamente:
@@ -18,11 +18,11 @@ if st.button("Gerar história e demanda"):
     if entrada_usuario.strip() == "":
         st.warning("Digite um texto para gerar a história e a demanda.")
     else:
-        # Configure a API Key do Gemini de forma segura
-        genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
+        API_KEY = st.secrets["GOOGLE_API_KEY"]   # <-- PEGANDO DO SECRETS!
+        client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
-
+Você é um especialista em análise de negócios e demandas analíticas em telecom.
 
 Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
 1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
@@ -73,13 +73,13 @@ Principais mudanças e melhorias: [detalhar]
 ---
 
 Exemplo de Demanda Pipefy:
-Solicitação de: Lyriam Milesi  
+Solicitação de: [Nome do solicitante]
 Squad: MCM | APP  
-Email: usuario@teste.com.br  
+Email: teste@teste.com.br  
 Tipo de Solicitação: Analytics - Análises de dados  
 Tipo de Demanda: Pesquisa de dados  
 Prioridade: Importante  
-Descrição da Solicitação: Precisamos saber o volume de Usuários únicos por segmento no App e Site.  
+Descrição da Solicitação: Precisamos saber o volume de UU por segmento no App MCM.  
 Motivo da Solicitação: Marketing precisa dessa volumetria para propor campanhas de incentivo para o Auto Atendimento  
 Expectativa de Entrega: 31/10/2023
 
@@ -89,11 +89,12 @@ Gere as duas respostas AUTOMATICAMENTE, com todos os campos preenchidos, adaptan
 
 Responda em markdown para facilitar a visualização.
 """
-        model = genai.GenerativeModel('gemini-pro')
-        resposta = model.generate_content(prompt)
-        
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",  # ou "gemini-2.5-pro"
+            contents=prompt
+        )
         st.markdown("---")
         st.markdown("### Resposta da IA")
-        st.markdown(resposta.text)
+        st.markdown(response.text)
 
-st.info("Este app usa a API do Google Gemini para gerar histórias de usuário e demandas Pipefy automaticamente.")
+st.info("Este app usa a API do Google Gemini e a chave está protegida no painel de secrets do Streamlit Cloud.")
