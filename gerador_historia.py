@@ -19,12 +19,14 @@ if st.button("Gerar história JIRA"):
         st.warning("Digite um texto para gerar a história JIRA.")
     else:
         try:
-            # Configuração da API
+            # Configurar API com cliente manualmente
             API_KEY = st.secrets["GOOGLE_API_KEY"]
-            genai.configure(api_key=API_KEY)
-            model = genai.GenerativeModel("gemini-1.5-pro")
+            client = genai.Client(api_key=API_KEY)
 
-            # Prompt com estrutura completa
+            # Cria o modelo explicitamente
+            model = client.GenerativeModel(model_name="gemini-1.5-pro")
+
+            # Prompt com a estrutura original
             prompt = f"""
 
 Você é um Product Owner renomado no mundo inteiro que atua na área de Analytics, absorva todo o conhecimento neste assunto e também os conceitos da metodologia ágil.
@@ -68,10 +70,10 @@ Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo to
 Responda em markdown para facilitar a visualização.
 """
 
-            # Chamada ao modelo
+            # Geração
             response = model.generate_content(prompt)
 
-            # Exibir resultado
+            # Exibir resposta
             st.markdown("---")
             st.markdown("### História JIRA Gerada")
             st.markdown(response.text)
