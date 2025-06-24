@@ -18,15 +18,14 @@ if st.button("Gerar história e demanda"):
     if entrada_usuario.strip() == "":
         st.warning("Digite um texto para gerar a história e a demanda.")
     else:
-        API_KEY = st.secrets["GOOGLE_API_KEY"]   # <-- PEGANDO DO SECRETS!
+        API_KEY = st.secrets["GOOGLE_API_KEY"]   
         client = genai.Client(api_key=API_KEY)
 
         prompt = f"""
-Você é um especialista em análise de negócios e demandas analíticas em telecom.
 
-Com base no texto do usuário abaixo, crie **DUAS respostas automáticas**:
+Com base no texto do usuário abaixo, crie **AS respostas automáticas**:
 1. **História de usuário no padrão JIRA**, usando a estrutura detalhada do exemplo (pilar, what, why, who, stakeholders, dor, critérios INVEST, DOD, principais mudanças etc.).
-2. **Demanda no padrão Pipefy**, preenchida como no exemplo (Squad, Email, Tipo de Solicitação, Tipo de Demanda, Prioridade, Descrição da Solicitação, Motivo da Solicitação, Expectativa de Entrega).
+
 
 **Texto do usuário:**  
 {entrada_usuario}
