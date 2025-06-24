@@ -83,4 +83,4 @@ Responda em markdown para facilitar a visualização.
         st.markdown("### Resposta da IA")
         st.markdown(response.text)
 
-st.info("Este app usa a API do Google Gemini e a chave está protegida no painel de secrets do Streamlit Cloud.")
+
