@@ -2,8 +2,22 @@ import streamlit as st
 import google.generativeai as genai
 import openai
 import time
+import requests
 
-# Configuração da página
+# === Função para rodar modelo local com Ollama ===
+def gerar_historia_ollama(prompt, modelo="mistral"):
+    try:
+        response = requests.post(
+            "http://localhost:11434/api/generate",
+            json={"model": modelo, "prompt": prompt, "stream": False},
+            timeout=60
+        )
+        resposta = response.json()["response"]
+        return resposta
+    except Exception as erro:
+        return f"Erro com modelo local: {erro}"
+
+# === Interface do Streamlit ===
 st.set_page_config(page_title="Gerador de Histórias JIRA", layout="wide")
 st.title("Gerador de Histórias JIRA")
 
@@ -20,7 +34,7 @@ if st.button("Gerar história JIRA"):
     if not entrada_usuario.strip():
         st.warning("Digite um texto para gerar a história JIRA.")
     else:
-        # PROMPT COMPLETO COM A ESTRUTURA ORIGINAL
+        # === Prompt estruturado ===
         prompt = f"""
 Você é um Product Owner renomado no mundo inteiro que atua na área de Analytics, absorva todo o conhecimento neste assunto e também os conceitos da metodologia ágil.
 
@@ -63,7 +77,7 @@ Gere apenas a história JIRA, adaptando ao contexto do usuário e preenchendo to
 Responda em markdown para facilitar a visualização.
 """
 
-        # Tenta com Gemini primeiro
+        # === Tenta com Gemini ===
         try:
             st.info("⏳ Gerando com Gemini (Google)...")
             genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
@@ -80,9 +94,9 @@ Responda em markdown para facilitar a visualização.
             st.markdown("### História JIRA (via Gemini)")
             st.markdown(response.text)
 
-        # Fallback para OpenChat 7B via OpenRouter
-        except Exception as e:
-            st.warning("⚠️ Falha com Gemini. Usando OpenChat 7B (via OpenRouter)...")
+        # === Fallback: OpenRouter GPT ===
+        except Exception as e1:
+            st.warning("⚠️ Falha com Gemini. Tentando OpenRouter...")
 
             try:
                 client = openai.OpenAI(
@@ -102,6 +116,11 @@ Responda em markdown para facilitar a visualização.
                 st.markdown("### História JIRA (via OpenRouter - OpenChat 7B)")
                 st.markdown(historia)
 
-            except Exception as err:
-                st.error("❌ Falha também no modelo alternativo.")
-                st.text(f"Erro: {err}")
+            # === Fallback final: Modelo local via Ollama ===
+            except Exception as e2:
+                st.warning("⚠️ Falha também com OpenRouter. Usando modelo local via Ollama...")
+
+                historia = gerar_historia_ollama(prompt, modelo="mistral")
+                st.success("✅ História gerada com Mistral local!")
+                st.markdown("### História JIRA (via Mistral - local)")
+                st.markdown(historia)
