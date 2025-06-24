@@ -80,9 +80,9 @@ Responda em markdown para facilitar a visualização.
             st.markdown("### História JIRA (via Gemini)")
             st.markdown(response.text)
 
-        # Se falhar, usa OpenRouter (GPT-3.5)
+        # Fallback para Mistral (via OpenRouter)
         except Exception as e:
-            st.warning("⚠️ Falha com Gemini. Usando GPT-3.5 (via OpenRouter) como alternativa...")
+            st.warning("⚠️ Falha com Gemini. Usando Mistral 7B (via OpenRouter) como alternativa...")
 
             try:
                 client = openai.OpenAI(
@@ -91,15 +91,15 @@ Responda em markdown para facilitar a visualização.
                 )
 
                 response = client.chat.completions.create(
-                    model="openai/gpt-3.5-turbo",
+                    model="mistralai/mistral-7b-instruct",
                     messages=[{"role": "user", "content": prompt}],
                     temperature=0.7,
                     max_tokens=1000
                 )
 
                 historia = response.choices[0].message.content
-                st.success("✅ História gerada com GPT-3.5!")
-                st.markdown("### História JIRA (via OpenRouter)")
+                st.success("✅ História gerada com Mistral 7B!")
+                st.markdown("### História JIRA (via OpenRouter - Mistral)")
                 st.markdown(historia)
 
             except Exception as err:
